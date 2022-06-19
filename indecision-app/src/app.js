@@ -3,29 +3,23 @@ console.log("App.js is running.")
 const app = {
     title : "Indecision App",
     subtitle : "Put your life in the hands of a computer",
-    options: ["One","Two"]
+    options: []
 }
 
-// this is JSX , but it would not work without Babbel, Babbel converts the new es6or es7 features to es5 
-const template = (
-    <div>
-        <h1>{app.title}</h1>
-        {app.subtitle && <p>{app.subtitle}</p>}
-        <ol>
-        <li>Item One</li>
-        <li>Item Two</li>
-        </ol>
-        {app.options && app.options.length>0?
-            <div>
-                <h1>Here are your itmes</h1>
-                <ol>
-                <li>{app.options[0]}</li>
-                <li>{app.options[1]}</li>
-                </ol>
-            </div>:"No Options to show"
-        }
-    </div>
-);
+const onFormSubmit = (e)=>{
+    e.preventDefault();
+    // console.log("Form submitted",e.target.option.value)
+    // console.log("Form submitted",e.target.elements.option.value)    // this is preferred
+    const option =  e.target.elements.option.value;
+    if(!option) alert("Please enter something")
+    else {
+        app.options.push(option);
+        renderApp()
+        console.log("Options Array is ",app.options)
+        e.target.elements.option.value = ""
+    }
+
+}
 
 const userName = "Money Gupta";
 const userAge = 22;
@@ -63,14 +57,49 @@ const templateThree = (
     </div>
 );
 
-const allTemplate = (
-    <div>
-        {template}
-        {templateTwo}
-        {templateThree}
-    </div>
-);
-    
+const onRemoveAll = ()=>{
+    console.log("Before deleting the options array",app.options);
+    app.options = [];
+    console.log("After deleting the options array",app.options)
+    renderApp();
+}
+
 const appRoot = document.getElementById('app');
 
-ReactDOM.render(allTemplate,appRoot);
+const renderApp = ()=>{
+    // this is JSX , but it would not work without Babbel, Babbel converts the new es6or es7 features to es5 
+const template = (
+    <div>
+        <h1>{app.title}</h1>
+        {app.subtitle && <p>{app.subtitle}</p>}
+        {app.options.length >0  ?"Here are your options":" No Options"}
+      
+        <ol>
+        <li>Item One</li>
+        <li>Item Two</li>
+        </ol>
+        
+        <form onSubmit={onFormSubmit}>
+        <input type="text" name="option"/>
+        <button>Add Option</button>
+        </form>
+        <button onClick={onRemoveAll}>Remove All</button>
+        <ol>
+        {
+            app.options.map((element)=> <li key={element+Math.random()}>{element}</li>    )
+        }
+        </ol>
+    </div>
+);
+    const allTemplate = (
+        <div>
+            {template}
+            {templateTwo}
+            {templateThree}
+        </div>
+    );
+        
+    ReactDOM.render(allTemplate,appRoot)
+}
+
+renderApp()
